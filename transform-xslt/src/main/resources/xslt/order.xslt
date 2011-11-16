@@ -9,7 +9,7 @@
 				</orderId>
 				<accepted>
 					<xsl:choose>
-						<xsl:when test="(itemId = 'BUTTER') and (quantity &gt;= 200)">
+						<xsl:when test="(itemId = 'BUTTER') and (quantity &lt;= 200)">
 							true
 						</xsl:when>
 						<xsl:otherwise>
