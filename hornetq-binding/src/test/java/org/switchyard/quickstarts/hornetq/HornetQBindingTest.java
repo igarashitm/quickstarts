@@ -31,7 +31,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.switchyard.Exchange;
 import org.switchyard.component.bean.config.model.BeanSwitchYardScanner;
-import org.switchyard.component.hornetq.internal.HornetQUtil;
 import org.switchyard.test.MockHandler;
 import org.switchyard.test.SwitchYardRunner;
 import org.switchyard.test.SwitchYardTestCaseConfig;
@@ -71,7 +70,6 @@ public class HornetQBindingTest {
         
         final Exchange recievedExchange = greetingService.getMessages().iterator().next();
         assertThat(recievedExchange.getMessage().getContent(String.class), is(equalTo(payload)));
-        HornetQUtil.closeClientProducer(producer);
     }
     
     @Before

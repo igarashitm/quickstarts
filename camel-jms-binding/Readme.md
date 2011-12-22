@@ -19,7 +19,7 @@ JBoss AS 7
 5. Deploy JMS Queue
     cp src/test/resources/switchyard-quickstart-camel-jms-binding-hornetq-jms.xml ${AS7}/standalone/deployments
 6. Deploy the quickstart
-    cp target/switchyard-quickstarts-camel-jms-binding.jar ${AS7}/standalone/deployments
+    cp target/switchyard-quickstart-camel-jms-binding.jar ${AS7}/standalone/deployments
 7. Execute HornetQClient
     mvn exec:java
 8. Check the server console for output from the service.
