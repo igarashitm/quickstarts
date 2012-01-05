@@ -57,6 +57,7 @@
         <module>rules-interview-agent</module>
         <module>transform-jaxb</module>
         <module>transform-json</module>
+        <module>transform-json-reftest</module>
         <module>transform-smooks</module>
         <module>transform-xslt</module>
         <module>validate-xml</module>
