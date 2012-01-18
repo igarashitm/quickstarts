@@ -46,6 +46,7 @@
 
     <modules>
         <module>bean-service</module>
+        <module>bean-service2</module>
         <module>bpel-service</module>
         <module>bpm-service</module>
         <module>camel-binding</module>
