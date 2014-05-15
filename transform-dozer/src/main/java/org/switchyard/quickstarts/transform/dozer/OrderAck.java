@@ -16,8 +16,11 @@
  */
 package org.switchyard.quickstarts.transform.dozer;
 
-public class OrderAck {
+import java.io.Serializable;
 
+public class OrderAck implements Serializable {
+
+    private static final long serialVersionUID = -7421789567476774841L;
     private String _orderId;
     private boolean _accepted;
     private String _statusDescription;

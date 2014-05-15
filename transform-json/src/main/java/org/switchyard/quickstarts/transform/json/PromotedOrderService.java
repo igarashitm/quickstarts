@@ -14,31 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.switchyard.quickstarts.transform.dozer;
+package org.switchyard.quickstarts.transform.json;
 
-import java.io.Serializable;
+import org.switchyard.annotations.OperationTypes;
 
-public class Order implements Serializable {
+public interface PromotedOrderService {
 
-    private static final long serialVersionUID = -4371305682599091903L;
-    private String _item;
-    private int _quantity;
+    @OperationTypes(in = "{urn:switchyard-quickstart:transform-json:1.0}order",
+            out = "{urn:switchyard-quickstart:transform-json:1.0}orderResponse")
+    String submitOrder(String order);
 
-    public Order setItem(String item) {
-        _item = item;
-        return this;
-    }
-
-    public Order setQuantity(int quantity) {
-        _quantity = quantity;
-        return this;
-    }
-
-    public String getItem() {
-        return _item;
-    }
-
-    public int getQuantity() {
-        return _quantity;
-    }
 }

@@ -14,19 +14,29 @@
 package org.switchyard.quickstarts.transform.json;
 
 import static java.lang.System.out;
-import javax.xml.namespace.QName;
 
-import org.switchyard.remote.RemoteInvoker;
-import org.switchyard.remote.RemoteMessage;
-import org.switchyard.remote.http.HttpInvoker;
+import javax.jms.Connection;
+import javax.jms.ConnectionFactory;
+import javax.jms.Message;
+import javax.jms.MessageConsumer;
+import javax.jms.MessageProducer;
+import javax.jms.Session;
+import javax.jms.TextMessage;
+
+import org.apache.activemq.ActiveMQConnectionFactory;
+import org.junit.Assert;
 
 /**
  * Test client which uses RemoteInvoker to invoke a service with an SCA binding.
  */
 public final class JsonTransformationClient {
 
-    private static final QName SERVICE = new QName( "urn:switchyard-quickstart:transform-json:0.1.0", "OrderService");
-    private static final String URL = "http://localhost:8080/switchyard-remote";
+    private static final String AMQ_USER = "karaf";
+    private static final String AMQ_PASSWD = "karaf";
+    private static final String AMQ_BROKER_URL = "tcp://localhost:61616";
+    private static final String REQUEST_QUEUE_NAME = "RequestQueue";
+    private static final String REPLY_QUEUE_NAME = "ReplyQueue";
+    private static final String ORDER_JSON = "{\"orderId\":\"PO-19838-XYZ\",\"itemId\":\"BUTTER\",\"quantity\":100}";
 
     /**
      * Private no-args constructor.
@@ -40,28 +50,30 @@ public final class JsonTransformationClient {
      * @throws Exception if something goes wrong.
      */
     public static void main(final String[] ignored) throws Exception {
-        // Create a new remote client invoker
-        RemoteInvoker invoker = new HttpInvoker(URL);
 
-        // Create request payload
-        Order order = new Order();
-        order.setItemId("Turkey");
-        order.setOrderId("Xmas Dinner");
-        order.setQuantity(1);
+        ConnectionFactory cf = new ActiveMQConnectionFactory(AMQ_USER, AMQ_PASSWD, AMQ_BROKER_URL);
+        Connection conn = cf.createConnection();
+        conn.start();
+        String orderAck;
+        
+         try {
+             Session session = conn.createSession(false, Session.AUTO_ACKNOWLEDGE);
+             MessageProducer producer = session.createProducer(session.createQueue(REQUEST_QUEUE_NAME));
+             producer.send(session.createTextMessage(ORDER_JSON));
+             session.close();
 
-        // Create the request message
-        RemoteMessage message = new RemoteMessage();
-        message.setService(SERVICE).setOperation("submitOrder").setContent(order);
+             session = conn.createSession(false, Session.AUTO_ACKNOWLEDGE);
+             MessageConsumer consumer = session.createConsumer(session.createQueue(REPLY_QUEUE_NAME));
+             Message message = consumer.receive(10000);
+             Assert.assertTrue("Invalid message: " + message, message instanceof TextMessage);
+             orderAck = ((TextMessage)message).getText();
+             Assert.assertTrue(orderAck.matches(".*\"accepted\":true.*"));
+         } finally {
+             conn.close();
+         }
 
-        // Invoke the service
-        RemoteMessage reply = invoker.invoke(message);
-        if (reply.isFault()) {
-            System.err.println("Oops ... something bad happened.  " + reply.getContent());
-        } else {
-            OrderAck orderAck = (OrderAck) reply.getContent();
-            out.println("==================================");
-            out.println("Was the offer accepted? " + orderAck.isAccepted());
-            out.println("==================================");
-        }
+         out.println("==================================");
+         out.println("Response: " + orderAck);
+         out.println("==================================");
     }
 }

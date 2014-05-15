@@ -84,8 +84,23 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>org.switchyard.components</groupId>
+            <artifactId>switchyard-component-test-mixin-hornetq</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.jms</groupId>
+            <artifactId>jms</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.activemq</groupId>
+            <artifactId>activemq-client</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -99,6 +114,10 @@
         <dependency>
             <groupId>org.switchyard</groupId>
             <artifactId>switchyard-remote</artifactId>
+        </dependency>
+        <dependency>
+        	<groupId>org.switchyard.components</groupId>
+        	<artifactId>switchyard-component-camel-jms</artifactId>
         </dependency>
     </dependencies>
     <build>

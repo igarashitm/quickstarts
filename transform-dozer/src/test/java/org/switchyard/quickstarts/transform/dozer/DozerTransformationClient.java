@@ -14,19 +14,28 @@
 package org.switchyard.quickstarts.transform.dozer;
 
 import static java.lang.System.out;
-import javax.xml.namespace.QName;
 
-import org.switchyard.remote.RemoteInvoker;
-import org.switchyard.remote.RemoteMessage;
-import org.switchyard.remote.http.HttpInvoker;
+import javax.jms.Connection;
+import javax.jms.ConnectionFactory;
+import javax.jms.Message;
+import javax.jms.MessageConsumer;
+import javax.jms.MessageProducer;
+import javax.jms.ObjectMessage;
+import javax.jms.Session;
+
+import org.apache.activemq.ActiveMQConnectionFactory;
+import org.junit.Assert;
 
 /**
  * Test client which uses RemoteInvoker to invoke a service with an SCA binding.
  */
 public final class DozerTransformationClient {
 
-    private static final QName SERVICE = new QName( "urn:switchyard-quickstart:transform-dozer:0.1.0", "OrderService");
-    private static final String URL = "http://localhost:8080/switchyard-remote";
+    private static final String AMQ_USER = "karaf";
+    private static final String AMQ_PASSWD = "karaf";
+    private static final String AMQ_BROKER_URL = "tcp://localhost:61616";
+    private static final String REQUEST_QUEUE_NAME = "RequestQueue";
+    private static final String REPLY_QUEUE_NAME = "ReplyQueue";
 
     /**
      * Private no-args constructor.
@@ -40,29 +49,35 @@ public final class DozerTransformationClient {
      * @throws Exception if something goes wrong.
      */
     public static void main(final String[] ignored) throws Exception {
-        // Create a new remote client invoker
-        RemoteInvoker invoker = new HttpInvoker(URL);
 
-        // Create request payload
         Order order = new Order();
         order.setItem("Turkey");
         order.setQuantity(1);
+        OrderAck orderAck;
+        
+        ConnectionFactory cf = new ActiveMQConnectionFactory(AMQ_USER, AMQ_PASSWD, AMQ_BROKER_URL);
+        Connection conn = cf.createConnection();
+        conn.start();
 
-        // Create the request message
-        RemoteMessage message = new RemoteMessage();
-        message.setService(SERVICE).setOperation("submitOrder").setContent(order);
+         try {
+             Session session = conn.createSession(false, Session.AUTO_ACKNOWLEDGE);
+             MessageProducer producer = session.createProducer(session.createQueue(REQUEST_QUEUE_NAME));
+             producer.send(session.createObjectMessage(order));
+             session.close();
 
-        // Invoke the service
-        RemoteMessage reply = invoker.invoke(message);
-        if (reply.isFault()) {
-            System.err.println("Oops ... something bad happened.  " + reply.getContent());
-        } else {
-            OrderAck orderAck = (OrderAck) reply.getContent();
-            out.println("==================================");
-            out.println("Was the offer accepted? " + orderAck.isAccepted());
-            out.println("Description: " + orderAck.getStatusDescription());
-            out.println("Order ID: " + orderAck.getOrderId());
-            out.println("==================================");
-        }
+             session = conn.createSession(false, Session.AUTO_ACKNOWLEDGE);
+             MessageConsumer consumer = session.createConsumer(session.createQueue(REPLY_QUEUE_NAME));
+             Message message = consumer.receive(10000);
+             Assert.assertTrue("Invalid message: " + message, message instanceof ObjectMessage);
+             orderAck = (OrderAck) ((ObjectMessage)message).getObject();
+         } finally {
+             conn.close();
+         }
+
+         out.println("==================================");
+         out.println("Was the offer accepted? " + orderAck.isAccepted());
+         out.println("Description: " + orderAck.getStatusDescription());
+         out.println("Order ID: " + orderAck.getOrderId());
+         out.println("==================================");
     }
 }

@@ -15,21 +15,25 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 -->
-<switchyard xmlns="urn:switchyard-config:switchyard:1.0" xmlns:bean="urn:switchyard-component-bean:config:1.0" xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200912" xmlns:trfm="urn:switchyard-config:transform:1.0" name="transform-json">
-    <sca:composite name="transform-json" targetNamespace="urn:switchyard-quickstart:transform-json:0.1.0">
-        <sca:service name="OrderService" promote="OrderServiceBean/OrderService">
-            <sca:interface.java interface="org.switchyard.quickstarts.transform.json.OrderService" />
-            <sca:binding.sca />
-        </sca:service>
-        <sca:component name="OrderServiceBean">
-            <bean:implementation.bean class="org.switchyard.quickstarts.transform.json.OrderServiceBean" />
-            <sca:service name="OrderService">
-                <sca:interface.java interface="org.switchyard.quickstarts.transform.json.OrderService" />
-            </sca:service>
-        </sca:component>
-    </sca:composite>
-    <transforms>
-        <trfm:transform.json from="java:org.switchyard.quickstarts.transform.json.OrderAck" to="{urn:switchyard-quickstart:transform-json:1.0}orderResponse"/>
-        <trfm:transform.json from="{urn:switchyard-quickstart:transform-json:1.0}order" to="java:org.switchyard.quickstarts.transform.json.Order"/>
-    </transforms>
+<switchyard xmlns="urn:switchyard-config:switchyard:1.0" xmlns:bean="urn:switchyard-component-bean:config:1.0" xmlns:jms="urn:switchyard-component-camel-jms:config:1.0" xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200912" xmlns:trfm="urn:switchyard-config:transform:1.0" name="transform-json">
+  <sca:composite name="transform-json" targetNamespace="urn:switchyard-quickstart:transform-json:0.1.0">
+    <sca:service name="OrderService" promote="OrderServiceBean/OrderService">
+      <sca:interface.java interface="org.switchyard.quickstarts.transform.json.PromotedOrderService"/>
+      <jms:binding.jms name="jms1">
+        <jms:queue>RequestQueue</jms:queue>
+        <jms:connectionFactory>#ConnectionFactory</jms:connectionFactory>
+        <jms:replyTo>ReplyQueue</jms:replyTo>
+      </jms:binding.jms>
+    </sca:service>
+    <sca:component name="OrderServiceBean">
+      <bean:implementation.bean class="org.switchyard.quickstarts.transform.json.OrderServiceBean"/>
+      <sca:service name="OrderService">
+        <sca:interface.java interface="org.switchyard.quickstarts.transform.json.OrderService"/>
+      </sca:service>
+    </sca:component>
+  </sca:composite>
+  <transforms>
+    <trfm:transform.json from="java:org.switchyard.quickstarts.transform.json.OrderAck" to="{urn:switchyard-quickstart:transform-json:1.0}orderResponse"/>
+    <trfm:transform.json from="{urn:switchyard-quickstart:transform-json:1.0}order" to="java:org.switchyard.quickstarts.transform.json.Order"/>
+  </transforms>
 </switchyard>
