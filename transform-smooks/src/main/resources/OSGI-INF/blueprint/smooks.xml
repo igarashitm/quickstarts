@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0" default-activation="eager">
+  
+    <service id="mySmooksFactory" interface="org.milyn.SmooksFactory">
+        <service-properties>
+            <entry key="name" value="mySmooksFactory"/>
+            <entry key="osgi.jndi.service.name" value="mySmooksFactory"/>
+        </service-properties>
+        <bean class="org.milyn.SmooksOSGIFactory">
+            <argument ref="blueprintBundle"/>
+        </bean>
+    </service>
+
+</blueprint>
