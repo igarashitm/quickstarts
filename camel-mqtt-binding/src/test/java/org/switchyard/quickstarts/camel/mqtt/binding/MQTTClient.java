@@ -64,12 +64,16 @@ public final class MQTTClient {
 
             publishConnection = mqtt.blockingConnection();
             publishConnection.connect();
+            long start = System.currentTimeMillis();
             publishConnection.publish(TOPIC_INPUT, payload.getBytes(), QoS.AT_LEAST_ONCE, false);
             System.out.println("Published a message to " + TOPIC_INPUT + ": " + payload);
 
-            Message msg = null;
-            while((msg = subscribeConnection.receive(3000, TimeUnit.MILLISECONDS)) != null) {
-                System.out.println("Received a message from " + TOPIC_OUTPUT + ": " + new String(msg.getPayload()));
+            Message msg = subscribeConnection.receive(30000, TimeUnit.MILLISECONDS);
+            long end = System.currentTimeMillis();
+            if (msg != null) {
+                System.out.println("Received a message from " + TOPIC_OUTPUT + ":[" + new String(msg.getPayload()) + "] in " + (end-start) + "[ms]");
+            } else {
+                System.out.println("No message was received");
             }
         } finally {
             if (publishConnection != null && publishConnection.isConnected()) {

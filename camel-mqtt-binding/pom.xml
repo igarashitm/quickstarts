@@ -75,7 +75,6 @@
         <dependency>
             <groupId>org.apache.activemq</groupId>
             <artifactId>activemq-broker</artifactId>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.activemq</groupId>
@@ -146,6 +145,12 @@
                     <executable>java</executable>
                     <classpathScope>test</classpathScope>
                     <mainClass>org.switchyard.quickstarts.camel.mqtt.binding.MQTTClient</mainClass>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <enableAssertions>false</enableAssertions>
                 </configuration>
             </plugin>
         </plugins>

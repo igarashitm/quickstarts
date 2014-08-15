@@ -27,7 +27,6 @@ import org.fusesource.mqtt.client.QoS;
 import org.fusesource.mqtt.client.Topic;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.switchyard.Exchange;
@@ -93,7 +92,30 @@ public class CamelMQTTBindingTest {
         }
     }
 
-    @Ignore("Disable for now due to https://issues.jboss.org/browse/SWITCHYARD-2221")
+    @Test
+    public void testFullPath() throws Exception {
+        MQTT mqtt = new MQTT();
+        BlockingConnection subscribeConnection = mqtt.blockingConnection();
+        Topic outputTopic = new Topic(TOPIC_OUTPUT, QoS.AT_LEAST_ONCE);
+        subscribeConnection.connect();
+        subscribeConnection.subscribe(new Topic[]{outputTopic});
+
+        BlockingConnection publishConnection = mqtt.blockingConnection();
+        publishConnection.connect();
+        publishConnection.publish(TOPIC_INPUT, MESSAGE_INPUT.getBytes(), QoS.AT_LEAST_ONCE, false);
+        publishConnection.disconnect();
+        
+        long start = System.currentTimeMillis();
+        Message message = subscribeConnection.receive(30000, TimeUnit.MILLISECONDS);
+        long end = System.currentTimeMillis();
+        Assert.assertNotNull("No output message from " + TOPIC_OUTPUT, message);
+        System.out.println("########## " + (end-start) + "[ms]");
+        Assert.assertEquals(MESSAGE_OUTPUT, new String(message.getPayload()));
+        Assert.assertNull("More than one message received from " + TOPIC_OUTPUT,
+                subscribeConnection.receive(1000, TimeUnit.MILLISECONDS));
+         subscribeConnection.disconnect();
+     }
+
     @Test
     public void testReferenceBinding() throws Exception {
         MQTT mqtt = new MQTT();
