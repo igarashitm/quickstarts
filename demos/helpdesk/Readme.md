@@ -27,10 +27,10 @@ Maven
 Running the quickstart
 ======================
 
-JBoss AS 7
+JBoss EAP
 ----------
 1. Start the application server:
-    ${AS}/bin/standalone.sh
+    ${EAP_HOME}/bin/standalone.sh
 
 2. Build and deploy the web application:
    mvn install -Pdeploy
@@ -53,6 +53,50 @@ JBoss AS 7
     Continue toggling back and forth as the users until all tasks are completed.
     You can view the application server output in its console window to see the progression of the progress.
 
+6. Undeploy the quickstart:
+        mvn clean -Pdeploy
+
+
+Karaf
+----------
+1. Start the karaf server:
+
+    ${KARAF_HOME}/bin/karaf
+
+2. Add the features URL for the respective version of SwitchYard.   Replace {SWITCHYARD-VERSION}
+with the version of SwitchYard that you are using (ex. 2.0.0): 
+
+    karaf@root> features:addurl mvn:org.switchyard.karaf/switchyard/{SWITCHYARD-VERSION}/xml/features
+
+3. Install the feature for the remote-invoker quickstart :
+
+    karaf@root> features:install switchyard-demo-helpdesk
+
+3. In a web browser window, use the web application:
+    Browse to http://localhost:8181/helpdesk/index.html
+    Select the User you want to act as.
+    Note that you can toggle back and forth between users. (This would normally be automatically chosen based on the logged on user.)
+    So far there are no processes started, so there are no tasks.
+
+4. In a different console window, start a process (this will use the SOAP gateway):
+
+    mvn -Pkaraf exec:java
+
+    You can do this as many times as you wish, starting as many processes as you wish.
+
+5. Going back to your web browser window:
+    As krisv (a developer), click the Submit button to get the list of tasks.
+    As krisv, review the tasks you want to perform and click the Submit button again.
+    As david (a user), click the Submit button to get the list of tasks. He will only have tasks if more details were required.
+    If there were user tasks, check the tasks you want to complete and click the Submit button again.
+    Continue toggling back and forth as the users until all tasks are completed.
+    You can view the application server output in its console window to see the progression of the progress.
+
+6. Undeploy the quickstart:
+
+    karaf@root> features:uninstall switchyard-demo-helpdesk
+
+
 Expected Output:
 ================
 (Note: Your outcome might be different from below based on the result of the ticket review.)
@@ -62,9 +106,6 @@ INFO  [org.switchyard.quickstarts.demos.helpdesk.TicketManagementServiceBean] (h
 INFO  [org.switchyard.quickstarts.demos.helpdesk.TicketManagementServiceBean] (http-/127.0.0.1:8080-1) ********** approving ticket **********
 INFO  [org.switchyard.quickstarts.demos.helpdesk.TicketManagementServiceBean] (http-/127.0.0.1:8080-1) ********** closing ticket **********
 ```
-
-6. Undeploy the quickstart:
-        mvn clean -Pdeploy
 
 ## Further Reading
 
