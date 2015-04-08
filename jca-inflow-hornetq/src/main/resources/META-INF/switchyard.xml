@@ -44,4 +44,9 @@
     <transforms xmlns:xform="urn:switchyard-config:transform:1.0">
         <xform:transform.jaxb contextPath="org.switchyard.quickstarts.jca.inflow" from="{urn:switchyard-quickstart:jca-inflow-hornetq:0.1.0}person" to="java:org.switchyard.quickstarts.jca.inflow.Person"/>
     </transforms>
+    <domain>
+        <properties>
+            <property name="org.switchyard.deployment.disableAutoStartup" value="${org.switchyard.deployment.disableAutoStartup:false}"/>
+        </properties>
+    </domain>
 </switchyard>

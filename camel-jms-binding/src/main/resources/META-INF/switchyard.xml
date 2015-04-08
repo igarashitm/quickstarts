@@ -29,4 +29,9 @@
             </service>
         </component>
     </composite>
+    <domain>
+        <properties>
+            <property name="org.switchyard.deployment.disableAutoStartup" value="${org.switchyard.deployment.disableAutoStartup:false}"/>
+        </properties>
+    </domain>
 </switchyard>

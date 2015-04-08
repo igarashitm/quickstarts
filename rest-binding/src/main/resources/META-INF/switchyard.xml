@@ -77,7 +77,8 @@
         <properties>
             <property name="restPort" value="${org.switchyard.component.resteasy.standalone.port:8080}"/>
             <property name="restPath" value="${org.switchyard.component.resteasy.standalone.path:/rest-binding}"/>
-      <property name="org.switchyard.handlers.messageTrace.enabled" value="false"/>
+            <property name="org.switchyard.handlers.messageTrace.enabled" value="false"/>
+            <property name="org.switchyard.deployment.disableAutoStartup" value="${org.switchyard.deployment.disableAutoStartup:false}"/>
         </properties>
     </domain>
 </switchyard>
