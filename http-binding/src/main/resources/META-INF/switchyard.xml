@@ -37,10 +37,12 @@
             </reference>
         </component>
     </composite>
-    <!-- Uncomment this section to trace message exchange activity
     <domain>
         <properties>
-          <property name="org.switchyard.handlers.messageTrace.enabled" value="true"/>
+            <!-- Uncomment this section to trace message exchange activity
+            <property name="org.switchyard.handlers.messageTrace.enabled" value="true"/>
+            -->
+            <property name="org.switchyard.deployment.disableAutoStartup" value="${disableAutoStartup:false}"/>
         </properties>
     </domain>
     -->

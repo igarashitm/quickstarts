@@ -40,6 +40,7 @@
         <properties>
             <property name="restPort" value="${org.switchyard.component.resteasy.standalone.port:8080}"/>
             <property name="restPath" value="${org.switchyard.component.resteasy.standalone.path:/rest-binding}"/>
+            <property name="org.switchyard.deployment.disableAutoStartup" value="${disableAutoStartup:false}"/>
         </properties>
     </domain>
 </switchyard>
