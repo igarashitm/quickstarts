@@ -51,6 +51,7 @@
     <domain>
         <properties>
             <property name="jettyPort" value="${org.switchyard.component.http.standalone.port:8080}"/>
+            <property name="org.switchyard.deployment.disableAutoStartup" value="${org.switchyard.deployment.disableAutoStartup:false}"/>
         </properties>
     </domain>
 </switchyard>

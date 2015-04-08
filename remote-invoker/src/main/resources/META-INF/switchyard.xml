@@ -37,4 +37,10 @@
       </sca:service>
     </sca:component>
   </sca:composite>
+  <domain>
+      <properties>
+        <property name="org.switchyard.deployment.disableAutoStartup" value="${org.switchyard.deployment.disableAutoStartup:false}"/>
+      </properties>
+  </domain>
 </switchyard>
+
